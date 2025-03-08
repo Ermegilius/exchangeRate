@@ -65,7 +65,7 @@ class FetchWrapper {
 // Copy the example request
 // Please check the documentation link, read Standard Requests documentation
 // Sending a GET request to <a href="https://v6.exchangerate-api.com/v6/YOUR_API_KEY/latest/USD">https://v6.exchangerate-api.com/v6/YOUR_API_KEY/latest/USD</a>
-// Above will give you exchange rate comapred to USD
+// Above will give you exchange rate compared to USD
 
 // TODO: WRITE YOUR TYPESCRIPT CODE HERE
 
