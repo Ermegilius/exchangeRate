@@ -53,6 +53,30 @@ This project is a TypeScript-based web application that shows the conversion rat
     npm run dev
     ```
 
+-   **Production Build:**  
+    To create a production build, use the following command:
+
+```sh
+npm run build
+npm run preview
+```
+
+This will generate a `dist` folder containing the compiled JavaScript files.
+Once the preview server starts, open http://localhost:4173 in your browser.
+
+-   **Docker**
+
+The container is published on Docker Hub. To pull and run the published image, use:
+
+```sh
+docker pull --platform linux/amd64 ermegilius/exchange-rate:latest # for x86
+
+docker run -p 5000:5000 ermegilius/exchange-rate:latest # for x86
+docker run --platform linux/amd64 -p 5001:5000 ermegilius/exchange-rate:latest # for ARM
+```
+
+The app will be accessible at http://localhost:5000 # for x86 and http://localhost:5001 # for ARM.
+
 ## Project Structure
 
 -   **src/main.ts**  
