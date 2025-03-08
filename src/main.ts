@@ -1,39 +1,50 @@
-interface Data {
-  conversion_rates: Record<string, number>;
+interface ExchangeRate {
+	[key: string]: number;
+}
+interface ExchangeRatesResponse {
+	result: string;
+	documentation: string;
+	terms_of_use: string;
+	time_last_update_unix: number;
+	time_last_update_utc: string;
+	time_next_update_unix: number;
+	time_next_update_utc: string;
+	base_code: string;
+	conversion_rates: ExchangeRate;
 }
 
 class FetchWrapper {
-  baseURL: string;
+	baseURL: string;
 
-  constructor(baseURL: string) {
-    this.baseURL = baseURL;
-  }
+	constructor(baseURL: string) {
+		this.baseURL = baseURL;
+	}
 
-  get(endpoint: string): Promise<Data> {
-    return fetch(this.baseURL + endpoint).then((response) => response.json());
-  }
+	get(endpoint: string): Promise<ExchangeRatesResponse> {
+		return fetch(this.baseURL + endpoint).then((response) => response.json());
+	}
 
-  put(endpoint: string, body: any): Promise<any> {
-    return this._send('put', endpoint, body);
-  }
+	put(endpoint: string, body: any): Promise<any> {
+		return this._send("put", endpoint, body);
+	}
 
-  post(endpoint: string, body: any): Promise<any> {
-    return this._send('post', endpoint, body);
-  }
+	post(endpoint: string, body: any): Promise<any> {
+		return this._send("post", endpoint, body);
+	}
 
-  delete(endpoint: string, body: any): Promise<any> {
-    return this._send('delete', endpoint, body);
-  }
+	delete(endpoint: string, body: any): Promise<any> {
+		return this._send("delete", endpoint, body);
+	}
 
-  _send(method: string, endpoint: string, body: any): Promise<any> {
-    return fetch(this.baseURL + endpoint, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    }).then((response) => response.json());
-  }
+	_send(method: string, endpoint: string, body: any): Promise<any> {
+		return fetch(this.baseURL + endpoint, {
+			method,
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(body),
+		}).then((response) => response.json());
+	}
 }
 
 //TODO
@@ -59,22 +70,38 @@ class FetchWrapper {
 // TODO: WRITE YOUR TYPESCRIPT CODE HERE
 
 // A global variable that references the HTML select element with the id base-currency
+const baseCurrency = document.getElementById("base-currency") as HTMLSelectElement;
+let baseCurrencyValue: string;
+
 // A global variable that references the HTML select element with the id target-currency
+const targetCurrency = document.getElementById("target-currency") as HTMLSelectElement;
+let targetCurrencyValue: string;
+
 // A global variable that references the HTML paragraph element with the id conversion-result
-// A global variable that stores the conversion rates for each currency pair as an array of arrays
+const conversionResult = document.getElementById("conversion-result") as HTMLParagraphElement;
+let conversionResultValue = conversionResult.textContent;
 
-// An instance of the FetchWrapper class with the base URL of the API
-// A constant that stores the API key for authentication
+// A global variable that stores the conversion rates as an object mapping currency codes to numbers.
+let rates: ExchangeRate;
 
-// A call to the get method of the API instance with the endpoint that requests the latest conversion rates for the USD currency
-// Assign the conversion_rates property of the response data to the rates variable
+const API_KEY = "0df6f25e2a14ffd353be9284";
 
-// Add an event listener to the base element that invokes the getConversionRates function when the user selects a new value
-// base.addEventListener('change', getConversionRates);
-// Add an event listener to the target element that invokes the getConversionRates function when the user selects a new value
+// Event listeners trigger a new API call when the currency selections change.
+baseCurrency.addEventListener("change", getConversionRates);
+targetCurrency.addEventListener("change", getConversionRates);
 
-// A function that performs the currency conversion and updates the UI
+function getConversionRates() {
+	// Update the selected currency values
+	baseCurrencyValue = baseCurrency.value;
+	targetCurrencyValue = targetCurrency.value;
 
-// Iterate over the rates array and find the rate that matches the target currency value
-// If the currency name matches the target currency value
-// Assign the conversion rate to the textContent property of the result element, which displays it on the web page
+	// Create a new FetchWrapper instance using the updated base currency.
+	const api = new FetchWrapper(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${baseCurrencyValue}/`);
+
+	// Make the API call. The API returns an object which we parse to choose the right currency pair.
+	api.get("").then((data: ExchangeRatesResponse) => {
+		rates = data.conversion_rates;
+		const rate = rates[targetCurrencyValue];
+		conversionResult.textContent = `${rate}`;
+	});
+}
