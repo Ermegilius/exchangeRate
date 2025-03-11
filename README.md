@@ -69,7 +69,8 @@ Once the preview server starts, open http://localhost:4173 in your browser.
 The container is published on Docker Hub. To pull and run the published image, use:
 
 ```sh
-docker pull --platform linux/amd64 ermegilius/exchange-rate:latest # for x86
+docker pull --platform ermegilius/exchange-rate:latest # for x86
+docker pull --platform linux/amd64 ermegilius/exchange-rate:latest # for ARM
 
 docker run -p 5000:5000 ermegilius/exchange-rate:latest # for x86
 docker run --platform linux/amd64 -p 5001:5000 ermegilius/exchange-rate:latest # for ARM
